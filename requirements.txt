@@ -1,0 +1,6 @@
+numpy
+cryptography
+fastapi
+uvicorn
+click
+pydantic
