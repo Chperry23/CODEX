@@ -77,3 +77,21 @@ class KeyManager:
     def list_keys(self) -> list[str]:
         mapping = self.map.load_map()
         return list(mapping.keys())
+
+    def delete_key(self, key_id: str) -> bool:
+        """Remove a key from storage.
+
+        Returns True if the key existed and was removed."""
+        mapping = self.map.load_map()
+        data = self._load_data()
+        if key_id not in mapping or key_id not in data:
+            return False
+        index = mapping.pop(key_id)
+        self.map.save_map(mapping)
+        data.pop(key_id, None)
+        self._save_data(data)
+        # Overwrite vector with new noise
+        vecs = self.db.load_vectors()
+        vecs[index] = _random_vector(self.dimensions)
+        self.db.save_vectors(vecs)
+        return True

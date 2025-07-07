@@ -27,3 +27,6 @@ class VBSKSEasy:
 
     def reconfigure(self) -> None:
         self.reconfig.reconfigure()
+
+    def delete_key(self, key_id: str) -> bool:
+        return self.manager.delete_key(key_id)

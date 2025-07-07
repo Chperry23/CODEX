@@ -24,18 +24,36 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Initialise a new database folder and store a test key:
+Initialise a new database folder and store a test key (the CLI reads
+`VBSKS_DB_FOLDER` and `VBSKS_MASTER_PASSWORD` if set):
 
 ```bash
 python vbsks_cli.py init --db-folder mydb
 python vbsks_cli.py store --key-id example --db-folder mydb
+python vbsks_cli.py retrieve --key-id example --db-folder mydb
+python vbsks_cli.py delete --key-id example --db-folder mydb
 ```
 
-Run the REST API (default on `http://127.0.0.1:8000`):
+Run the REST API (defaults can be provided via environment variables):
 
 ```bash
-python vbsks_api.py --db-folder mydb
+export VBSKS_DB_FOLDER=mydb
+export VBSKS_MASTER_PASSWORD=mypassword
+python vbsks_api.py
 ```
+
+### API usage
+
+The REST API exposes the following endpoints:
+
+```
+POST  /store       {"key_id": "id", "data": "secret"}
+POST  /retrieve    {"key_id": "id"}
+GET   /list
+DELETE /delete     {"key_id": "id"}
+```
+
+For front-end applications, the server allows cross-origin requests.
 
 ## Project structure
 

@@ -1,14 +1,24 @@
 #!/usr/bin/env python
 from __future__ import annotations
 
+import os
 import click
 
 from vbsks import VBSKSEasy
 
 
 @click.group()
-@click.option("--db-folder", required=True, help="Database folder")
-@click.option("--master-password", prompt=True, hide_input=True)
+@click.option(
+    "--db-folder",
+    default=lambda: os.environ.get("VBSKS_DB_FOLDER"),
+    help="Database folder (or set VBSKS_DB_FOLDER)",
+)
+@click.option(
+    "--master-password",
+    default=lambda: os.environ.get("VBSKS_MASTER_PASSWORD"),
+    prompt=os.environ.get("VBSKS_MASTER_PASSWORD") is None,
+    hide_input=True,
+)
 @click.pass_context
 def cli(ctx, db_folder: str, master_password: str) -> None:
     ctx.obj = VBSKSEasy(db_folder=db_folder, master_password=master_password)
@@ -52,6 +62,16 @@ def list(v: VBSKSEasy) -> None:
 def reconfigure(v: VBSKSEasy) -> None:
     v.reconfigure()
     click.echo("Reconfiguration complete")
+
+
+@cli.command()
+@click.option("--key-id", required=True)
+@click.pass_obj
+def delete(v: VBSKSEasy, key_id: str) -> None:
+    if v.delete_key(key_id):
+        click.echo(f"Deleted key {key_id}")
+    else:
+        click.echo("Key not found")
 
 
 if __name__ == "__main__":
