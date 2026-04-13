@@ -496,3 +496,59 @@ Adaptive reconfiguration timing based on access patterns
 Enhanced backup strategies for large databases
 Hardware-accelerated vector movement for performance optimization
 Distributed reconfiguration for clustered deployments
+
+## Contact Collector Agent (emails + phone numbers)
+
+If you want a starter agent that visits links and extracts contact info:
+
+```bash
+pip install requests beautifulsoup4
+python contact_collector_agent.py --start-url https://example.com --max-pages 30 --output contacts.csv
+```
+
+Options:
+- `--start-url`: first page to crawl.
+- `--max-pages`: max number of pages to visit.
+- `--all-domains`: follow links outside the start domain.
+- `--profile-only`: only save rows from detected profile URLs.
+- `--cookies-json`: use login cookies for authenticated sites (like Facebook).
+- `--output`: CSV output file (`url, is_profile, emails, phones`).
+
+Facebook-style flow example:
+
+```bash
+python contact_collector_agent.py \
+  --start-url "https://www.facebook.com/groups/682391005183010/user/61574923289534/" \
+  --profile-only \
+  --cookies-json fb_cookies.json \
+  --max-pages 60 \
+  --output facebook_contacts.csv
+```
+
+`fb_cookies.json` can be either:
+- `{ "c_user": "...", "xs": "..." }`
+- or a browser-exported cookie list with `name` and `value` keys.
+
+Use this only on sites you are authorized to crawl, and respect each site's terms and `robots.txt`.
+
+### Save and run quickly
+
+1. Save the script as `contact_collector_agent.py`.
+2. Install dependencies:
+
+```bash
+python3 -m pip install requests beautifulsoup4
+```
+
+3. Run it:
+
+```bash
+python3 contact_collector_agent.py \
+  --start-url "https://www.facebook.com/groups/682391005183010/user/61574923289534/" \
+  --profile-only \
+  --cookies-json fb_cookies.json \
+  --max-pages 60 \
+  --output facebook_contacts.csv
+```
+
+4. Open `facebook_contacts.csv` after it finishes.
